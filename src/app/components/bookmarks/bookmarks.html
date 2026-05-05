@@ -1,0 +1,54 @@
+<section class="container">
+  <header class="header">
+    <div>
+      <h1>Bookmarks</h1>
+      <p>
+        Persisted remotely through the Express shim — duplicates are prevented server-side per anime id.
+      </p>
+    </div>
+
+    <a routerLink="/anime" class="explore-btn">
+      Explore more anime
+    </a>
+  </header>
+
+  @if (loading()) {
+    <div class="loading">
+      <div class="av-spinner"></div>
+    </div>
+  } @else if (!rows().length) {
+    <div class="empty">
+      <p class="title">No stars saved yet</p>
+      <p>Tap bookmark on cards or anime details once the backend is awake.</p>
+
+      <div class="empty-action">
+        <a routerLink="/anime" class="browse-btn">Browse catalog</a>
+      </div>
+    </div>
+  } @else {
+    <div class="grid">
+      @for (b of rows(); track b.id) {
+        <article class="card">
+          <div class="poster">
+            <img [src]="b.image" [alt]="b.title" />
+          </div>
+
+          <div class="content">
+            <h2>{{ b.title }}</h2>
+            <p class="mal">MAL #{{ b.animeId }}</p>
+
+            <div class="actions">
+              <a [routerLink]="['/anime', b.animeId]" class="view-btn">
+                View
+              </a>
+
+              <button (click)="deleteRow(b.id)" class="delete-btn">
+                Remove bookmark
+              </button>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>

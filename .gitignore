@@ -29,6 +29,9 @@ yarn-error.log
 !.vscode/mcp.json
 .history/*
 
+# Local JSON store for the Express API
+/data/*.json
+
 # Miscellaneous
 /.angular/cache
 .sass-cache/

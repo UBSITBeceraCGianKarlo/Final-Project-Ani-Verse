@@ -1,0 +1,99 @@
+<section class="container">
+
+  <a routerLink="/anime" class="back-btn">
+    ← Back to anime list
+  </a>
+
+  @if (loading()) {
+    <div class="loading">
+      <div class="av-spinner"></div>
+    </div>
+
+  } @else if (missing()) {
+
+    <div class="error-box">
+      Anime not found. The id may be invalid or Jikan is temporarily unreachable.
+
+      <div class="error-actions">
+        <a routerLink="/anime" class="btn">
+          Browse all anime
+        </a>
+      </div>
+    </div>
+
+  } @else if (anime(); as a) {
+
+    <div class="layout">
+
+      <!-- LEFT -->
+      <div class="left">
+
+        <div class="poster-box">
+          <img
+            [src]="poster(a)"
+            [alt]="displayTitle(a)"
+            loading="lazy"
+            (error)="$any($event.target).src='https://placehold.co/600x844/140a1f/9388a6?text=No+Poster'"
+          />
+        </div>
+
+        <button
+          class="bookmark-btn"
+          [disabled]="isBookmarked(a)"
+          (click)="toggleBookmark(a)"
+        >
+          @if (isBookmarked(a)) {
+            Saved to bookmarks
+          } @else {
+            Bookmark this title
+          }
+        </button>
+
+      </div>
+
+      <!-- RIGHT -->
+      <div class="right">
+
+        <header class="header">
+          <h1>{{ displayTitle(a) }}</h1>
+
+          <p class="meta">
+            Community score
+            <span class="score">{{ (a.score ?? 0).toFixed(2) }}</span>
+            · {{ a.episodes ?? '?' }} episodes
+          </p>
+
+          @if (a.rating) {
+            <p class="rating">{{ a.rating }}</p>
+          }
+        </header>
+
+        <!-- GENRES -->
+        <div class="genres">
+          @for (g of a.genres ?? []; track g.mal_id) {
+            <span class="genre-tag">
+              {{ g.name }}
+            </span>
+          }
+        </div>
+
+        <!-- SYNOPSIS -->
+        <article class="synopsis">
+          <h2>Synopsis</h2>
+
+          @if (a.synopsis) {
+            <p>{{ a.synopsis }}</p>
+          } @else {
+            <p class="muted">Synopsis unavailable for this title.</p>
+          }
+        </article>
+
+        <!-- COMMENTS -->
+        @if (routeAnimeId()) {
+          <app-anime-comments [animeId]="routeAnimeId()!" />
+        }
+
+      </div>
+    </div>
+  }
+</section> 

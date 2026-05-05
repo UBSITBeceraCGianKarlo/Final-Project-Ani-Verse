@@ -1,0 +1,129 @@
+<section class="container">
+  <div class="header">
+    <div>
+      <h1>Browse anime</h1>
+      <p>
+        Genre filters pull from MyAnimeList / Jikan. Search submits a dedicated query (press Enter).
+      </p>
+    </div>
+
+    <div class="meta">
+      Pagination uses Jikan <code>page</code> parameter.
+    </div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <label>
+      Genre filter
+      <select [(ngModel)]="genreMalIdSelection" (change)="applyFilters()" name="genre">
+        <option value="">All genres</option>
+        @for (g of genreOptions(); track g.mal_id) {
+          <option [value]="g.mal_id">{{ g.name }}</option>
+        }
+      </select>
+    </label>
+
+    <label class="search">
+      Search title
+      <div class="search-row">
+        <input
+          [(ngModel)]="searchDraft"
+          (keyup.enter)="applySearch()"
+          type="search"
+          placeholder="Try Attack on Titan…"
+          name="q"
+        />
+        <button (click)="applySearch()">Search</button>
+      </div>
+    </label>
+
+    <div class="pagination-top">
+      <button (click)="prevPage()" [disabled]="loading() || page() <= 1">Prev</button>
+
+      <span>Page {{ page() }} / {{ totalPages() }}</span>
+
+      <button (click)="nextPage()" [disabled]="loading() || !hasNext()">Next</button>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  @if (loading()) {
+    <div class="loading">
+      <div class="av-spinner"></div>
+    </div>
+  } @else {
+
+    @if (errorHint()) {
+      <p class="error">{{ errorHint() }}</p>
+    }
+
+    <!-- GRID -->
+    <div class="grid">
+      @for (a of items(); track a.mal_id) {
+        <a [routerLink]="['/anime', a.mal_id]" class="card">
+
+          <div class="poster">
+            <img
+              [src]="poster(a)"
+              [alt]="titleOf(a)"
+              loading="lazy"
+            />
+
+            @if ((a.score ?? 0) > 0) {
+              <div class="score">
+                {{ (a.score ?? 0).toFixed(1) }}
+              </div>
+            }
+          </div>
+
+          <div class="info">
+            <h2>{{ titleOf(a) }}</h2>
+
+            @if ((a.genres?.length ?? 0) > 0) {
+              <div class="genres">
+                @for (gx of (a.genres ?? []).slice(0, 3); track gx.mal_id) {
+                  <span>{{ gx.name }}</span>
+                }
+              </div>
+            }
+
+            <div class="actions">
+              <button
+                (click)="toggleBookmark(a, $event)"
+                [class.saved]="bookmarked(a)"
+                [disabled]="bookmarked(a)"
+              >
+                @if (bookmarked(a)) {
+                  Saved
+                } @else {
+                  Bookmark
+                }
+              </button>
+
+              <span class="id">MAL #{{ a.mal_id }}</span>
+            </div>
+          </div>
+
+        </a>
+      }
+    </div>
+
+    @if (!items().length && !errorHint()) {
+      <p class="empty">No anime to show.</p>
+    }
+
+    <!-- BOTTOM PAGINATION -->
+    @if (items().length > 0) {
+      <div class="pagination-bottom">
+        <button (click)="prevPage()" [disabled]="loading() || page() <= 1">
+          Previous page
+        </button>
+
+        <button (click)="nextPage()" [disabled]="loading() || !hasNext()">
+          Next page
+        </button>
+      </div>
+    }
+  }
+</section>

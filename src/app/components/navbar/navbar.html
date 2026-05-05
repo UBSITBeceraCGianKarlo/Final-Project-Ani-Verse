@@ -1,0 +1,44 @@
+<header class="nav-header">
+  <nav class="nav-container" aria-label="Primary">
+
+    <!-- BRAND -->
+    <a routerLink="/" class="brand">
+      <span class="logo">AV</span>
+      <span class="brand-name">Ani-Verse</span>
+    </a>
+
+    <!-- LINKS -->
+    <div class="nav-links">
+
+      <a
+        routerLink="/"
+        [routerLinkActiveOptions]="{ exact: true }"
+        routerLinkActive="active"
+        #homeNav="routerLinkActive"
+        [attr.aria-current]="homeNav.isActive ? 'page' : null"
+      >
+        Home
+      </a>
+
+      <a
+        routerLink="/anime"
+        routerLinkActive="active"
+        #animeNav="routerLinkActive"
+        [attr.aria-current]="animeNav.isActive ? 'page' : null"
+      >
+        Anime List
+      </a>
+
+      <a
+        routerLink="/bookmarks"
+        routerLinkActive="active"
+        #bmNav="routerLinkActive"
+        [attr.aria-current]="bmNav.isActive ? 'page' : null"
+      >
+        Bookmarks
+      </a>
+
+    </div>
+
+  </nav>
+</header>

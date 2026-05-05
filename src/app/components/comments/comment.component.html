@@ -1,0 +1,69 @@
+<section class="comments-container">
+  <div class="comments-header">
+    <div>
+      <h2>Community comments</h2>
+      <p>Personal API storage — start the Node server to enable CRUD.</p>
+    </div>
+    <span class="mal-id">MAL #{{ animeId() }}</span>
+  </div>
+
+  @if (apiDown()) {
+    <p class="api-warning">
+      Comments API offline. Run <code>npm run server</code> then refresh.
+    </p>
+  }
+
+  <form class="comment-form" (ngSubmit)="submit()">
+    <label>
+      Display name
+      <input [(ngModel)]="draftUser" name="user" required />
+    </label>
+
+    <label class="full">
+      Your take
+      <textarea [(ngModel)]="draftBody" name="body" rows="3" required></textarea>
+    </label>
+
+    <div class="form-actions">
+      <button type="submit">Post comment</button>
+    </div>
+  </form>
+
+  <div class="comments-list">
+    <div class="thread-header">
+      <h3>Thread</h3>
+    </div>
+
+    @if (!loading() && !comments().length) {
+      <p class="empty">Silence echoes… Drop the first reaction above.</p>
+    }
+
+    <ul>
+      @for (c of comments(); track c.id) {
+        <li class="comment-card">
+          <div class="comment-top">
+            <span class="username">{{ c.username }}</span>
+            <time>{{ formatDate(c.date) }}</time>
+          </div>
+
+          @if (editingId() === c.id) {
+            <div class="edit-box">
+              <textarea [(ngModel)]="editDraft" rows="3"></textarea>
+              <div class="edit-actions">
+                <button (click)="saveEdit(c.id)">Save</button>
+                <button (click)="cancelEdit()">Cancel</button>
+              </div>
+            </div>
+          } @else {
+            <p class="comment-text">{{ c.content }}</p>
+
+            <div class="comment-actions">
+              <button (click)="startEdit(c)">Edit</button>
+              <button (click)="remove(c.id)" class="delete">Delete</button>
+            </div>
+          }
+        </li>
+      }
+    </ul>
+  </div>
+</section>

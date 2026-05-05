@@ -1,0 +1,20 @@
+:host {
+  display: block;
+  min-height: 100%;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  background: radial-gradient(circle at top, #1a0b2e 0%, #07070c 45%, #000 100%);
+}
+
+/* MAIN CONTENT AREA */
+.app-main {
+  flex: 1;
+  padding-bottom: 64px;
+  padding-top: 0;
+  overflow-x: hidden;
+}
